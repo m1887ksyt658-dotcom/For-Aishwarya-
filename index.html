@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Aishwarya ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+        }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 2;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        h1.name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+        }
+
+        .text-line {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+
+        .text-line.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-red {
+            color: #ff4d6d;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.4);
+        }
+
+        .big-i-love-you {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            color: #ff124f;
+            text-shadow: 0 0 25px rgba(255, 18, 79, 0.8);
+            margin: 25px 0;
+            animation: pulse 2s infinite;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn-glow {
+            border-color: #ff4d6d;
+            color: #ff4d6d;
+            animation: breathing 2s infinite;
+        }
+
+        .btn-glow:hover {
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
+        }
+
+        .heart-icon {
+            font-size: 6rem;
+            color: #ff4d6d;
+            animation: heartbeat 1.2s infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.7));
+            margin-bottom: 20px;
+        }
+
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.5s ease;
+        }
+
+        .timeline-item.unlocked { opacity: 1; }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            background: #fff;
+            border-radius: 50%;
+            margin-right: 20px;
+            box-shadow: 0 0 8px #fff;
+            transition: all 0.5s ease;
+        }
+
+        .timeline-item.unlocked .dot {
+            background: #ff4d6d;
+            box-shadow: 0 0 15px #ff4d6d;
+            transform: scale(1.2);
+        }
+
+        .timeline-text { font-size: 1.2rem; text-align: left; }
+
+        .pop-card {
+            font-size: 0.9rem;
+            color: #ff4d6d;
+            font-style: italic;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding-left: 35px;
+            text-align: left;
+        }
+
+        .pop-card.show { max-height: 50px; margin-top: 5px; }
+
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #ff4d6d;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.25); }
+            40% { transform: scale(1.1); }
+            60% { transform: scale(1.3); }
+            80% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 35px rgba(255, 18, 79, 1); }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        @keyframes breathing {
+            0% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 77, 109, 0.2); }
+            50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 77, 109, 0.2); }
+        }
+
+        .proposal-buttons { display: flex; gap: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+    
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://files.catbox.moe/cutjys.mpeg" type="audio/mpeg">
+    </audio>
+
+    <button id="music-control" onclick="toggleMute()">🔊 Mute</button>
+
+    <div class="screen active" id="screen-0">
+        <div style="font-size: 3rem; margin-bottom: 20px;">🎵</div>
+        <p class="text-line reveal">Aishwarya's special story is ready...</p>
+        <button class="btn-glow" id="start-btn" onclick="startExperience()">🌹 Enter the Story</button>
+    </div>
+
+    <div class="screen" id="screen-1">
+        <p class="text-line" id="s1-t1">Kehte hain har kahani ek random moment se shuru hoti hai...</p>
+        <button class="btn-glow" id="s1-btn" style="opacity:0; transition: 1s;" onclick="nextScreen(1, 2)">Continue ➜</button>
+    </div>
+
+    <div class="screen" id="screen-2">
+        <div class="timeline-container">
+            <div class="timeline-item unlocked" onclick="clickTimeline(1)">
+                <div class="dot"></div>
+                <div class="timeline-text">📍 A random follow</div>
+            </div>
+            <div class="pop-card" id="card-1">And that notification changed everything... ✨</div>
+
+            <div class="timeline-item" id="time-2" onclick="clickTimeline(2)">
+                <div class="dot"></div>
+                <div class="timeline-text">📍 A few reactions</div>
+            </div>
+            <div class="pop-card" id="card-2">Story replies became a daily habit ❤️</div>
+
+            <div class="timeline-item" id="time-3" onclick="clickTimeline(3)">
+                <div class="dot"></div>
+                <div class="timeline-text">📍 A simple conversation</div>
+            </div>
+            <div class="pop-card" id="card-3">Where hours felt like seconds... 💬</div>
+        </div>
+        <button id="s2-btn" style="display:none;" onclick="nextScreen(2, 3)">Next ➜</button>
+    </div>
+
+    <div class="screen" id="screen-3">
+        <p class="text-line" id="s3-t1">Maine socha tha ye bas ek normal conversation hogi...</p>
+        <p class="text-line" id="s3-t2" style="font-style: italic;">Par phir...</p>
+        <p class="text-line highlight-red" id="s3-t3">Mujhe tumhari aadat si hone lagi.</p>
+    </div>
+
+    <div class="screen" id="screen-4">
+        <div class="heart-icon">❤️</div>
+        <p class="text-line" id="s4-t1">Kuch log achhe lagte hain...</p>
+        <p class="text-line" id="s4-t2">Kuch log yaad reh jaate hain...</p>
+        <p class="text-line highlight-red" id="s4-t3">Aur kuch log kahani ban jaate hain...</p>
+    </div>
+
+    <div class="screen" id="screen-5">
+        <h1 class="name">Aishwarya...</h1>
+        <p class="text-line" id="s5-t1">Mujhe jaldi decision lena pasand nahi...</p>
+        <p class="text-line" id="s5-t2">Isliye maine tumhe samjha...</p>
+        <p class="text-line" id="s5-t3">Aur jitna samjha... utna tum pasand aayi.</p>
+        <p class="text-line" id="s5-t4">Par ab baat sirf pasand ki nahi rahi...</p>
+        <p class="text-line" id="s5-t5">Pata hi nahi chala kab tumhari aadat, meri zarurat ban gayi.</p>
+        <p class="text-line" id="s5-t6">Aur kab tum... mera pyaar ban gayi.</p>
+        
+        <div class="big-i-love-you" id="s5-ily" style="display:none;">I Love You. ❤️</div>
+        <p class="text-line reveal" id="s5-q" style="display:none; font-weight:600;">Will you be my girlfriend?</p>
+        
+        <div class="proposal-buttons" id="s5-btns" style="display:none;">
+            <button class="btn-glow" onclick="celebrate()">🌹 Yes</button>
+            <button class="btn-glow" onclick="celebrate()">🌹 Definitely Yes</button>
+        </div>
+    </div>
+
+    <div class="screen" id="screen-6">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🎉 I Knew It! 😉</div>
+        <h1 class="name" style="font-size: 3rem;">Thank You, Aishwarya!</h1>
+        <p class="text-line reveal">You just made me the happiest person. ❤️</p>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-music');
+
+        function startExperience() {
+            audio.muted = false;
+            var playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    document.getElementById('music-control').style.display = 'block';
+                }).catch(err => {
+                    alert("Audio play failed. Please check browser settings.");
+                    console.log("Error playing audio: ", err);
+                });
+            }
+            
+            nextScreen(0, 1);
+            setTimeout(() => {
+                document.getElementById('s1-t1').classList.add('reveal');
+            }, 500);
+            setTimeout(() => {
+                document.getElementById('s1-btn').style.opacity = 1;
+            }, 2500);
+        }
+
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false;
+                document.getElementById('music-control').innerText = "🔊 Mute";
+            } else {
+                audio.muted = true;
+                document.getElementById('music-control').innerText = "🔇 Unmute";
+            }
+        }
+
+        // Particle System Setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mode = 'stars'; 
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = mode === 'stars' ? Math.random() * 2 : Math.random() * 5 + 5;
+                this.speedX = mode === 'stars' ? (Math.random() - 0.5) * 0.5 : Math.random() * 1 - 0.5;
+                this.speedY = mode === 'stars' ? (Math.random() - 0.5) * 0.5 : Math.random() * 1.5 + 1;
+                this.alpha = Math.random();
+                this.fade = Math.random() * 0.02 + 0.005;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (mode === 'stars') {
+                    this.alpha += this.fade;
+                    if (this.alpha > 1 || this.alpha < 0) this.fade = -this.fade;
+                } else {
+                    if (this.y > canvas.height) this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = mode === 'stars' ? Math.abs(this.alpha) : 0.8;
+                if (mode === 'stars') {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = '#ff4d6d';
+                    ctx.beginPath();
+                    ctx.ellipse(this.x, this.y, this.size, this.size * 1.5, Math.PI / 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function initParticles(num) {
+            particles = [];
+            for (let i = 0; i < num; i++) particles.push(new Particle());
+        }
+        initParticles(100);
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function changeBackground(color) {
+            document.body.style.transition = "background 3s ease";
+            document.body.style.background = color;
+        }
+
+        function nextScreen(current, next) {
+            document.getElementById(`screen-${current}`).classList.remove('active');
+            document.getElementById(`screen-${next}`).classList.add('active');
+
+            if (next === 3) {
+                changeBackground('linear-gradient(to bottom, #050505, #1a0005)');
+                setTimeout(() => document.getElementById('s3-t1').classList.add('reveal'), 500);
+                setTimeout(() => document.getElementById('s3-t1').classList.remove('reveal'), 3500);
+                setTimeout(() => document.getElementById('s3-t2').classList.add('reveal'), 4500);
+                setTimeout(() => document.getElementById('s3-t3').classList.add('reveal'), 6000);
+                setTimeout(() => nextScreen(3, 4), 9500);
+            }
+
+            if (next === 4) {
+                setTimeout(() => document.getElementById('s4-t1').classList.add('reveal'), 500);
+                setTimeout(() => document.getElementById('s4-t2').classList.add('reveal'), 2500);
+                setTimeout(() => document.getElementById('s4-t3').classList.add('reveal'), 4500);
+                setTimeout(() => nextScreen(4, 5), 8500);
+            }
+
+            if (next === 5) {
+                changeBackground('linear-gradient(to bottom, #110005, #2d000f)');
+                mode = 'roses';
+                initParticles(60);
+                
+                setTimeout(() => document.getElementById('s5-t1').classList.add('reveal'), 1000);
+                setTimeout(() => document.getElementById('s5-t2').classList.add('reveal'), 3500);
+                setTimeout(() => document.getElementById('s5-t3').classList.add('reveal'), 6000);
+                setTimeout(() => document.getElementById('s5-t4').classList.add('reveal'), 9000);
+                setTimeout(() => document.getElementById('s5-t5').classList.add('reveal'), 12000);
+                setTimeout(() => document.getElementById('s5-t6').classList.add('reveal'), 15000);
+                
+                setTimeout(() => { document.getElementById('s5-ily').style.display = 'block'; }, 18000);
+                
+                setTimeout(() => {
+                    document.getElementById('s5-q').style.display = 'block';
+                    document.getElementById('s5-btns').style.display = 'flex';
+                }, 20000);
+            }
+        }
+
+        let currentStep = 1;
+        function clickTimeline(step) {
+            if (step === currentStep) {
+                document.getElementById(`card-${step}`).classList.add('show');
+                currentStep++;
+                if (currentStep <= 3) {
+                    setTimeout(() => { document.getElementById(`time-${currentStep}`).classList.add('unlocked'); }, 1000);
+                } else {
+                    setTimeout(() => { document.getElementById('s2-btn').style.display = 'inline-block'; }, 1200);
+                }
+            }
+        }
+
+        function celebrate() {
+            nextScreen(5, 6);
+            changeBackground('#3a0ca3');
+            mode = 'stars';
+            initParticles(200);
+            particles.forEach(p => p.speedY = (Math.random() - 0.5) * 5);
+        }
+    </script>
+</body>
+</html>
